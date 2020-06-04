@@ -40,9 +40,9 @@ module.exports = [
           mode: "development",
         },
       }),
-      // new webpack.ProvidePlugin({
-      //   d3: path.resolve(__dirname, "src", "d3.js"),
-      // }),
+      new webpack.ProvidePlugin({
+        d3: path.resolve(__dirname, "src", "d3.js"),
+      }),
     ],
   },
 ];

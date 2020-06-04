@@ -2,6 +2,9 @@
 _private
 references.txt
 
+#webpack
+bundle.js
+
 # Logs
 logs
 *.log

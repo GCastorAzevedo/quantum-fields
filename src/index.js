@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import "../public/style.css";
 
 //  TODO: implement the plot https://observablehq.com/@d3/ridgeline-plot,
 // also https://bl.ocks.org/armollica/3b5f83836c1de5cca7b1d35409a013e3
@@ -6,23 +7,15 @@ import * as d3 from "d3";
 // so to animate the graph of quantum states
 
 const margin = {
-  top: 10,
+  top: 50,
   right: 30,
   left: 30,
   bottom: 30,
 };
-const width = 460 - margin.left - margin.right;
-const height = 400 - margin.top - margin.bottom;
+const width = 1060 - margin.left - margin.right;
+const height = 1000 - margin.top - margin.bottom;
 const overlap = 16;
-const amplitude = width / 115;
-
-/* const svg = d3
-  .select("#dataviz")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform", `translate(${margin.left},${margin.top})`); */
+const amplitude = height / 200;
 
 async function draw() {
   const data = await d3
@@ -30,6 +23,7 @@ async function draw() {
       "https://gist.githubusercontent.com/borgar/31c1e476b8e92a11d7e9/raw/0fae97dab6830ecee185a63c1cee0008f6778ff6/pulsar.csv"
     )
     .then((data) => d3.csvParseRows(data, (row) => row.map(Number)));
+
   const x = d3
     .scaleLinear()
     .domain([0, data[0].length - 1])
@@ -45,26 +39,10 @@ async function draw() {
     .domain([d3.min(data, (d) => d3.min(d)), d3.max(data, (d) => d3.max(d))])
     .range([0, -overlap * y.step()]);
 
-  const xAxis = (g) =>
-    g
-      .attr("transform", `translate(0,${height - margin.bottom})`)
-      .call(d3.axisBottom(x.copy().domain([0, 100])).ticks(width / 80))
-      .call((g) => g.select(".domain").remove())
-      .call((g) =>
-        g
-          .select(".tick:first-of-type text")
-          .append("tspan")
-          .attr("x", 10)
-          .text("ms")
-      );
-  const area = d3
-    .area()
-    .defined((d) => !isNaN(d))
-    .x((d, i) => x(i))
-    .y0(0)
-    .y1(z);
-
-  const line = area.lineY1();
+  d3.select("#dataviz")
+    .append("h1")
+    .attr("class", "title")
+    .text("Joy Division Quantum Fields");
 
   const svg = d3
     .select("#dataviz")
@@ -72,64 +50,51 @@ async function draw() {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`)
-    .selectAll("g")
-    .data(data)
-    .join("g")
-    .attr("transform", (d, i) => `translate(0,${y(i) + 1})`)
-    .append("path")
-    .attr("fill", "#fff")
-    .attr("d", area)
-    .append("path")
-    .attr("fill", "none")
-    .attr("stroke", "black")
-    .attr("d", line);
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-  svg.append("g").call(xAxis);
-  return svg.node();
-  /* chart = {
-  const svg = d3.create("svg")
-      .attr("viewBox", [0, 0, width, height]);
-
-  const serie = svg.append("g")
-    .selectAll("g")
-    .data(data)
-    .join("g")
-      .attr("transform", (d, i) => `translate(0,${y(i) + 1})`);
-  
-  serie.append("path")
-      .attr("fill", "#fff")
-      .attr("d", area);
-  
-  serie.append("path")
-      .attr("fill", "none")
-      .attr("stroke", "black")
-      .attr("d", line);
-
-  svg.append("g")
-      .call(xAxis);
-  
-  return svg.node();
-} */
-
-  /* svg
+  svg
     .append("g")
+    .attr("transform", `translate(${margin.left},${margin.bottom})`)
     .selectAll(".wave")
     .data(data)
     .enter()
-    .append("path")
+    .append("g")
     .attr("class", "wave")
-    .attr("transform", (d, i) => `translate(0,${y(i)})`)
-    .attr("d", line); */
+    .attr("transform", (d, i) => `translate(0,${y(i) + 1})`)
+    .append("path")
+    .attr("fill", "#fff") // .attr("fill", "#69b3a2")
+    .attr("opacity", ".99")
+    .attr("stroke", "#000")
+    .attr("stroke.width", 1)
+    .attr("stroke-linejoin", "round")
+    .attr(
+      "d",
+      d3
+        .line()
+        .curve(d3.curveBasis)
+        .x((d, i) => x(i))
+        .y(z)
+      // d3
+      //   .area()
+      //   .x((d, i) => x(i))
+      //   .y1((d) => -d * amplitude)
+      //   .y0((d) => d * amplitude)
+      // const area = d3
+      //   .area()
+      //   .defined((d) => !isNaN(d))
+      //   .x((d, i) => x(i))
+      //   .y0(0)
+      //   .y1(z);
+      // const line = area.lineY1();
+    );
+
+  svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},${height})`)
+    .call(d3.axisBottom(x));
 }
 
 draw();
-
-/* const line = d3
-    .line()
-    .x((d, i) => x(i))
-    .y((d) => -d * amplitude); */
-// p = d3.line()([[10, 60], [40, 90], [60, 10], [190, 10]])
 
 /* 
      x = d3.scaleLinear()
@@ -273,3 +238,43 @@ d3.text('pulsar.csv', function ( raw ) {
     .attr( 'dy', '.92em' );
 
 }); */
+
+/* chart = {
+  const svg = d3.create("svg")
+      .attr("viewBox", [0, 0, width, height]);
+
+  const serie = svg.append("g")
+    .selectAll("g")
+    .data(data)
+    .join("g")
+      .attr("transform", (d, i) => `translate(0,${y(i) + 1})`);
+  
+  serie.append("path")
+      .attr("fill", "#fff")
+      .attr("d", area);
+  
+  serie.append("path")
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("d", line);
+
+  svg.append("g")
+      .call(xAxis);
+  
+  return svg.node();
+} */
+
+// const xAxis = (g) =>
+//   g
+//     .attr("transform", `translate(0,${height - margin.bottom})`)
+//     .call(d3.axisBottom(x.copy().domain([0, 100])).ticks(width / 80))
+//     .call((g) => g.select(".domain").remove())
+//     .call((g) =>
+//       g
+//         .select(".tick:first-of-type text")
+//         .append("tspan")
+//         .attr("x", 10)
+//         .text("ms")
+//     );
+
+// svg.append("g").call(xAxis);

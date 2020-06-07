@@ -90,6 +90,7 @@ async function draw() {
 
   svg
     .append("g")
+    .attr("margin-top", margin.top)
     .attr("transform", `translate(${margin.left},${height})`)
     .call(d3.axisBottom(x));
 }

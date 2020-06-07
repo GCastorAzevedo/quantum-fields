@@ -3,7 +3,7 @@ _private
 references.txt
 
 #webpack
-bundle.js
+# bundle.js
 
 # Logs
 logs

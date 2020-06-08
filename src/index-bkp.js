@@ -17,6 +17,21 @@ const height = 1000 - margin.top - margin.bottom;
 const overlap = 16;
 const amplitude = height / 200;
 
+/* function shuffle(array) {
+  newArray = new Array(array.length);
+  for (let i = 0; i < array.length; i++) {
+    // const n = array.length - newArray.length;
+    // Math.floor(Math.random() * n);
+    newArray[i] = array[i];
+  }
+  for (let i = 0; i < array.length; i++) {
+    const index = Math.floor(Math.random() * (array.length - i));
+    const tmp = array[index]
+
+  }
+  return newArray;
+} */
+
 function randomize(data) {
   return () => {
     const randomData = new Array(data.length);
@@ -27,7 +42,7 @@ function randomize(data) {
   };
 }
 
-async function draw() {
+async function* draw() {
   const data = await d3
     .text(
       "https://gist.githubusercontent.com/borgar/31c1e476b8e92a11d7e9/raw/0fae97dab6830ecee185a63c1cee0008f6778ff6/pulsar.csv"
@@ -61,53 +76,53 @@ async function draw() {
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
+  /* while (true) {
+    yield svg.node();
 
-  const graphs = (g) => {
-    return g
-      .append("g")
-      .attr("class", "wave")
-      .attr("transform", (d, i) => `translate(0,${y(i) + 1})`)
-      .append("path")
-      .attr("fill", "#fff") // .attr("fill", "#69b3a2")
-      .attr("opacity", ".99")
-      .attr("stroke", "#000")
-      .attr("stroke.width", 1)
-      .attr("stroke-linejoin", "round")
-      .attr(
-        "d",
-        d3
-          .line()
-          .curve(d3.curveBasis)
-          .x((d, i) => x(i))
-          .y(z)
-        // d3
-        //   .area()
-        //   .x((d, i) => x(i))
-        //   .y1((d) => -d * amplitude)
-        //   .y0((d) => d * amplitude)
-        // const area = d3
-        //   .area()
-        //   .defined((d) => !isNaN(d))
-        //   .x((d, i) => x(i))
-        //   .y0(0)
-        //   .y1(z);
-        // const line = area.lineY1();
-      );
-  };
-
+    await path
+      .data(randomize)
+      .transition()
+        .delay(1000)
+        .duration(1500)
+        .attr("d", area)
+      .end();
+  } */
   svg
     .append("g")
-    .attr("class", "graphs")
     .attr("transform", `translate(${margin.left},${margin.bottom})`)
     .selectAll(".wave")
     .data(randomize(data))
     .enter()
-    .call(graphs);
-
-  // svg.selectAll(".graphs").transition().duration(1000).delay(1000);
-  // svg.selectAll(".graphs").remove();
-  // .transition().duration(1000).delay(1000)
-
+    .append("g")
+    .attr("class", "wave")
+    .attr("transform", (d, i) => `translate(0,${y(i) + 1})`)
+    .append("path")
+    .attr("fill", "#fff") // .attr("fill", "#69b3a2")
+    .attr("opacity", ".99")
+    .attr("stroke", "#000")
+    .attr("stroke.width", 1)
+    .attr("stroke-linejoin", "round")
+    .attr(
+      "d",
+      d3
+        .line()
+        .curve(d3.curveBasis)
+        .x((d, i) => x(i))
+        .y(z)
+      // d3
+      //   .area()
+      //   .x((d, i) => x(i))
+      //   .y1((d) => -d * amplitude)
+      //   .y0((d) => d * amplitude)
+      // const area = d3
+      //   .area()
+      //   .defined((d) => !isNaN(d))
+      //   .x((d, i) => x(i))
+      //   .y0(0)
+      //   .y1(z);
+      // const line = area.lineY1();
+    )
+    .exit();
   svg
     .append("g")
     .attr("margin-top", margin.top)
@@ -115,37 +130,53 @@ async function draw() {
     .call(d3.axisBottom(x));
 }
 
+/* chart = {
+  const svg = d3.create("svg")
+      .attr("viewBox", [0, 0, width, height]);
+
+  const path = svg.selectAll("path")
+    .data(randomize)
+    .join("path")
+      .attr("d", area)
+      .attr("fill", () => z(Math.random()));
+
+  while (true) {
+    yield svg.node();
+
+    await path
+      .data(randomize)
+      .transition()
+        .delay(1000)
+        .duration(1500)
+        .attr("d", area)
+      .end();
+  }
+} */
+
 draw();
 
-/* var circle = svgDoc.select("g").selectAll("circle")
-      .data(eval("dataArray"+dataIndex));
-  
-  circle.exit().remove();//remove unneeded circles
-  circle.enter().append("circle")
-      .attr("r",0);//create any new circles needed
+/* chart = {
+  const svg = d3.create("svg")
+      .attr("viewBox", [0, 0, width, height]);
 
-  //update all circles to new positions
-  circle.transition()
-      .duration(500)
-      .attr("cx",function(d,i){
-          var spacing = lineLength/(eval("dataArray"+dataIndex).length);
-          return xBuffer+(i*spacing)
-      })
-      .attr("cy",yBuffer)
-      .attr("r",function(d,i){return d});
+  const path = svg.selectAll("path")
+    .data(randomize)
+    .join("path")
+      .attr("d", area)
+      .attr("fill", () => z(Math.random()));
 
-  d3.select("text").text("dataset"+dataIndex); */
+  while (true) {
+    yield svg.node();
 
-/* node.select("text").remove()
-
-node
-.append("text")
-.attr("dx", 12)
-.attr("dy", ".35em")
-.text(function(d) { return d.links });
-
-node
-.exit().remove(); */
+    await path
+      .data(randomize)
+      .transition()
+        .delay(1000)
+        .duration(1500)
+        .attr("d", area)
+      .end();
+  }
+} */
 
 /* 
      x = d3.scaleLinear()

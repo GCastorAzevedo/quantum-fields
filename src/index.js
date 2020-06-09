@@ -80,18 +80,6 @@ async function draw() {
           .curve(d3.curveBasis)
           .x((d, i) => x(i))
           .y(z)
-        // d3
-        //   .area()
-        //   .x((d, i) => x(i))
-        //   .y1((d) => -d * amplitude)
-        //   .y0((d) => d * amplitude)
-        // const area = d3
-        //   .area()
-        //   .defined((d) => !isNaN(d))
-        //   .x((d, i) => x(i))
-        //   .y0(0)
-        //   .y1(z);
-        // const line = area.lineY1();
       );
   };
 
@@ -104,18 +92,50 @@ async function draw() {
     .enter()
     .call(graphs);
 
-  // svg.selectAll(".graphs").transition().duration(1000).delay(1000);
-  // svg.selectAll(".graphs").remove();
-  // .transition().duration(1000).delay(1000)
-
   svg
     .append("g")
     .attr("margin-top", margin.top)
     .attr("transform", `translate(${margin.left},${height})`)
     .call(d3.axisBottom(x));
+
+  let s = 0;
+  while (s < 10) {
+    await d3
+      .selectAll("path")
+      .data(randomize(data))
+      .transition()
+      .duration(1000)
+      .attr(
+        "d",
+        d3
+          .line()
+          .curve(d3.curveBasis)
+          .x((d, i) => x(i))
+          .y(z)
+      )
+      .end();
+    s++;
+  }
 }
 
 draw();
+
+/* d3.select("#dataviz")
+    .append("div")
+    .append("svg")
+    .attr("width", 400)
+    .attr("height", 200)
+    .append("rect")
+    .attr("id", "my_rect")
+    // .attr("x", 10)
+    // .attr("y", 200)
+    .attr("width", 200)
+    .attr("height", 30)
+    .attr("stroke", "black")
+    .attr("stroke-width", 1)
+    .attr("fill", "#69b3a2");
+
+  d3.select("#my_rect").transition().duration(2000).attr("width", 400); */
 
 /* var circle = svgDoc.select("g").selectAll("circle")
       .data(eval("dataArray"+dataIndex));
@@ -329,3 +349,56 @@ d3.text('pulsar.csv', function ( raw ) {
 //     );
 
 // svg.append("g").call(xAxis);
+
+/* .enter()
+    .transition()
+    .duration(2000)
+    .attr(
+      "d",
+      d3
+        .line()
+        .curve(d3.curveBasis)
+        .x((d, i) => x(i))
+        .y(z)
+      // d3
+      //   .area()
+      //   .x((d, i) => x(i))
+      //   .y1((d) => -d * amplitude)
+      //   .y0((d) => d * amplitude)
+      // const area = d3
+      //   .area()
+      //   .defined((d) => !isNaN(d))
+      //   .x((d, i) => x(i))
+      //   .y0(0)
+      //   .y1(z);
+      // const line = area.lineY1();
+    ); */
+// .data(randomize(data))
+// .enter()
+// .call(graphs);
+/* d3.select("body").append("button")
+                .text("change data")
+                .on("click",function(){
+  
+  var circle = svgDoc.select("g").selectAll("circle")
+                        .data(eval("dataArray"+dataIndex));
+   */
+/* function tick() {
+
+  // Push a new data point onto the back.
+  data.push(random());
+
+  // Pop the old data point off the front.
+  data.shift();
+
+  // Redraw the line (with the wrong interpolation).
+  d3.active(this)
+      .attr("d", line)
+    .transition()
+      .on("start", tick);
+
+} */
+
+// svg.selectAll(".graphs").transition().duration(1000).delay(1000);
+// svg.selectAll(".graphs").remove();
+// .transition().duration(1000).delay(1000)
